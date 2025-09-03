@@ -1,6 +1,6 @@
-import Joi from "joi";
+const Joi = require("joi");
 
-export const validateSubmission = (data) => {
+const validateSubmission = (data) => {
     const schema = Joi.object({
         source_code: Joi.string().min(1).max(100000).required().messages({
             'string.empty': 'Source code cannot be empty',
@@ -40,7 +40,7 @@ export const validateSubmission = (data) => {
     return schema.validate(data);
 };
 
-export const validateTestCasesSubmission = (data) => {
+const validateTestCasesSubmission = (data) => {
     const schema = Joi.object({
         source_code: Joi.string().min(1).max(100000).required().messages({
             'string.empty': 'Source code cannot be empty',
@@ -79,3 +79,5 @@ export const validateTestCasesSubmission = (data) => {
 
     return schema.validate(data);
 };
+
+module.exports = { validateSubmission, validateTestCasesSubmission };

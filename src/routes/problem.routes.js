@@ -1,5 +1,5 @@
-import express from "express";
-import { ProblemController } from "../controllers/problem.controller.js";
+const express = require("express");
+const { ProblemController } = require("../controllers/problem.controller.js");
 
 const router = express.Router();
 const problemController = new ProblemController();
@@ -19,4 +19,4 @@ router.put("/:id", problemController.updateProblem);
 // Delete a problem
 router.delete("/:id", problemController.deleteProblem);
 
-export { router as problemRoutes };
+module.exports = { problemRoutes: router };

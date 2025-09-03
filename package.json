@@ -3,20 +3,30 @@
     "version": "1.0.0",
     "description": "LeetCode-like API for code submission and execution",
     "main": "src/index.js",
-    "type": "module",
     "scripts": {
         "start": "node --watch src/index.js",
         "dev": "nodemon src/index.js",
         "test": "node test-api.js",
-        "test:api": "echo \"Error: no test specified\" && exit 1"
+        "test:api": "echo \"Error: no test specified\" && exit 1",
+        "db:migrate": "npx sequelize-cli db:migrate",
+        "db:migrate:undo": "npx sequelize-cli db:migrate:undo",
+        "db:seed": "npx sequelize-cli db:seed:all",
+        "db:seed:undo": "npx sequelize-cli db:seed:undo:all",
+        "db:reset": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
     },
     "dependencies": {
         "axios": "^1.5.0",
+        "bcryptjs": "^3.0.2",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
         "http-status-codes": "^2.2.0",
-        "joi": "^17.10.1"
+        "joi": "^17.10.1",
+        "jsonwebtoken": "^9.0.2",
+        "mysql2": "^3.14.4",
+        "sequelize": "^6.37.7",
+        "sequelize-cli": "^6.6.3",
+        "sqlite3": "^5.1.7"
     },
     "devDependencies": {
         "nodemon": "^3.0.1"

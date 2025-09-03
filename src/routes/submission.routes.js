@@ -1,5 +1,5 @@
-import express from "express";
-import { SubmissionController } from "../controllers/submission.controller.js";
+const express = require("express");
+const { SubmissionController } = require("../controllers/submission.controller.js");
 
 const router = express.Router();
 const submissionController = new SubmissionController();
@@ -10,6 +10,9 @@ router.post("/" ,submissionController.submitCode);
 // Submit code with test cases
 router.post("/test-cases", submissionController.submitWithTestCases);
 
+// Validate code against test cases
+router.post("/validate", submissionController.validateCode);
+
 // Get supported programming languages
 router.get("/languages", submissionController.getSupportedLanguages);
 
@@ -19,4 +22,4 @@ router.get("/health/judge0", submissionController.healthCheck);
 // Get submission status and results
 router.get("/:token", submissionController.getSubmission);
 
-export { router as submissionRoutes };
+module.exports = { submissionRoutes: router };

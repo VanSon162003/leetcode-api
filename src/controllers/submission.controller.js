@@ -1,10 +1,12 @@
-import { SubmissionService } from "../services/submission.service.js";
-import { StatusCodes } from "http-status-codes";
-import { validateSubmission, validateTestCasesSubmission } from "../validators/submission.validator.js";
+const { SubmissionService } = require("../services/submission.service.js");
+const { TestCaseValidationService } = require("../services/testcase-validation.service.js");
+const { StatusCodes } = require("http-status-codes");
+const { validateSubmission, validateTestCasesSubmission } = require("../validators/submission.validator.js");
 
-export class SubmissionController {
+class SubmissionController {
     constructor() {
         this.submissionService = new SubmissionService();
+        this.testCaseValidationService = new TestCaseValidationService();
     }
 
     submitCode = async (req, res) => {
@@ -205,4 +207,63 @@ export class SubmissionController {
             });
         }
     };
+
+    // Validate code against test cases and return detailed results
+    validateCode = async (req, res) => {
+        try {
+            console.log("Received code validation request:", req.body);
+            
+            // Validate request body
+            const { error } = validateTestCasesSubmission(req.body);
+            if (error) {
+                console.log("Validation error:", error.details[0].message);
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    success: false,
+                    error: error.details[0].message,
+                    details: error.details
+                });
+            }
+
+            const { source_code, language_id, testCases, problemId } = req.body;
+
+            console.log(`Starting validation for problem: ${problemId} with ${testCases.length} test cases`);
+
+            // Validate code against test cases
+            const validationResult = await this.testCaseValidationService.validateCodeWithTestCases(
+                source_code,
+                language_id,
+                testCases,
+                problemId
+            );
+
+            console.log("Validation completed:", validationResult.summary);
+
+            // Determine response status based on results
+            const statusCode = validationResult.success && validationResult.summary.allPassed 
+                ? StatusCodes.OK 
+                : StatusCodes.BAD_REQUEST;
+
+            res.status(statusCode).json({
+                success: validationResult.success && validationResult.summary.allPassed,
+                message: validationResult.message,
+                data: {
+                    problemId: validationResult.problemId,
+                    summary: validationResult.summary,
+                    results: validationResult.results,
+                    passed: validationResult.summary.allPassed
+                }
+            });
+
+        } catch (error) {
+            console.error("Error in validateCode:", error);
+            
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                error: "Failed to validate code",
+                message: error.message
+            });
+        }
+    };
 }
+
+module.exports = { SubmissionController };

@@ -1,8 +1,8 @@
-import { StatusCodes } from "http-status-codes";
-import { ProblemService } from "../services/problem.service.js";
-import { validateProblem } from "../validators/problem.validator.js";
+const { StatusCodes } = require("http-status-codes");
+const { ProblemService } = require("../services/problem.service.js");
+const { validateProblem } = require("../validators/problem.validator.js");
 
-export class ProblemController {
+class ProblemController {
     constructor() {
         this.problemService = new ProblemService();
     }
@@ -16,7 +16,7 @@ export class ProblemController {
                 });
             }
 
-            const problem = this.problemService.createProblem(req.body);
+            const problem = await this.problemService.createProblem(req.body);
             res.status(StatusCodes.CREATED).json(problem);
         } catch (error) {
             console.error("Error in createProblem:", error);
@@ -29,7 +29,7 @@ export class ProblemController {
     getProblem = async (req, res) => {
         try {
             const { id } = req.params;
-            const problem = this.problemService.getProblem(id);
+            const problem = await this.problemService.getProblem(id);
 
             if (!problem) {
                 return res.status(StatusCodes.NOT_FOUND).json({
@@ -48,7 +48,9 @@ export class ProblemController {
 
     getAllProblems = async (req, res) => {
         try {
-            const problems = this.problemService.getAllProblems();
+            const { difficulty, categoryId, limit, offset } = req.query;
+            const options = { difficulty, categoryId, limit, offset };
+            const problems = await this.problemService.getAllProblems(options);
             res.status(StatusCodes.OK).json(problems);
         } catch (error) {
             console.error("Error in getAllProblems:", error);
@@ -68,7 +70,7 @@ export class ProblemController {
                 });
             }
 
-            const problem = this.problemService.updateProblem(id, req.body);
+            const problem = await this.problemService.updateProblem(id, req.body);
             if (!problem) {
                 return res.status(StatusCodes.NOT_FOUND).json({
                     error: "Problem not found",
@@ -87,7 +89,7 @@ export class ProblemController {
     deleteProblem = async (req, res) => {
         try {
             const { id } = req.params;
-            const deleted = this.problemService.deleteProblem(id);
+            const deleted = await this.problemService.deleteProblem(id);
 
             if (!deleted) {
                 return res.status(StatusCodes.NOT_FOUND).json({
@@ -104,3 +106,5 @@ export class ProblemController {
         }
     };
 }
+
+module.exports = { ProblemController };

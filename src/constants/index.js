@@ -1,4 +1,4 @@
-export const LANGUAGE_IDS = {
+const LANGUAGE_IDS = {
     JAVASCRIPT: 63,
     PYTHON: 71,
     JAVA: 62,
@@ -6,7 +6,7 @@ export const LANGUAGE_IDS = {
     C: 50,
 };
 
-export const SUBMISSION_STATUS = {
+const SUBMISSION_STATUS = {
     ACCEPTED: "Accepted",
     WRONG_ANSWER: "Wrong Answer",
     TIME_LIMIT_EXCEEDED: "Time Limit Exceeded",
@@ -15,3 +15,5 @@ export const SUBMISSION_STATUS = {
     PENDING: "In Queue",
     PROCESSING: "Processing",
 };
+
+module.exports = { LANGUAGE_IDS, SUBMISSION_STATUS };
